@@ -1,0 +1,6 @@
+{
+	"presets": ["@babel/preset-env", "@babel/present-react"],
+	"plugins": ["@babel/plugin-proposal-object-rest-spread"]
+}
+// @babel/preset-env is the newest version of the package. From Babel 7.x.x they movied babel-preset-env into the main Babel repo and changed the name
+// transform-object-rest-spread is included in @babel/preset-env

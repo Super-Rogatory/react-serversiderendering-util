@@ -3,8 +3,9 @@ import cors from 'cors';
 import { renderToString } from 'react-dom/server';
 import React from 'react';
 import App from '../client/src/components/App';
-import { fetchPopularRepos } from '../utils/utils';
 import serialize from 'serialize-javascript';
+import routes from '../client/src/components/routes';
+import { matchPath } from 'react-router-dom';
 
 const app = express();
 const PORT = 5000;
@@ -14,9 +15,14 @@ app.use(cors());
 app.use(express.static('public'));
 
 app.get('*', (req, res, next) => {
-	fetchPopularRepos()
+	const activeRoute = routes.find((route) => matchPath(req.url, route)) || {};
+
+	const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(req.path) : Promise.resolve();
+
+	promise
 		.then((data) => {
 			const markup = renderToString(<App data={data} />);
+
 			res.send(`
         <!DOCTYPE html>
         <html lang="en">

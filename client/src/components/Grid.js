@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
 
 class Grid extends Component {
-	render() {
-		const repos = this.props.data;
+	constructor(props) {
+		super(props);
 
+		let repos;
+		// eslint-disable-next-line no-undef
+		if (__isBrowser__) {
+			repos = window.__INITIAL_DATA__;
+			delete window.__INITIAL_DATA__;
+		} else {
+			repos = this.props.staticContext.data;
+		}
+
+		this.state = {
+			repos,
+		};
+	}
+
+	render() {
 		return (
 			<ul style={{ display: 'flex', flexWrap: 'wrap' }}>
-				{repos.map(({ name, owner, stargazers_count, html_url }) => (
+				{this.state.repos.map(({ name, owner, stargazers_count, html_url }) => (
 					<li key={name} style={{ margin: 30 }}>
 						<ul>
 							<li>

@@ -5,7 +5,7 @@ import React from 'react';
 import App from '../client/src/components/App';
 import serialize from 'serialize-javascript';
 import routes from '../client/src/components/routes';
-import { matchPath } from 'react-router-dom';
+import { StaticRouter, matchPath } from 'react-router-dom';
 
 const app = express();
 const PORT = 5000;
@@ -21,7 +21,12 @@ app.get('*', (req, res, next) => {
 
 	promise
 		.then((data) => {
-			const markup = renderToString(<App data={data} />);
+			const context = { data };
+			const markup = renderToString(
+				<StaticRouter location={req.url} context={context}>
+					<App data={data} />
+				</StaticRouter>
+			);
 
 			res.send(`
         <!DOCTYPE html>

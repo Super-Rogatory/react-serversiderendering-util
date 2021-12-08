@@ -15,10 +15,33 @@ class Grid extends Component {
 
 		this.state = {
 			repos,
+			loading: repos ? false : true,
 		};
+
+		this.fetchRepos = this.fetchRepos.bind(this);
+	}
+
+	componentDidMount() {
+		if (!this.state.repos) {
+			this.fetchRepos(this.props.match.params.id);
+		}
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.match.params.id !== this.props.match.params.id) {
+			this.fetchRepos(this.props.match.params.id);
+		}
+	}
+
+	fetchRepos(lang) {
+		this.setState({ loading: true });
+		this.props.fetchInitialData(lang).then((repos) => this.setState({ repos, loading: false }));
 	}
 
 	render() {
+		if (this.state.loading) {
+			return <div>Loading</div>;
+		}
 		return (
 			<ul style={{ display: 'flex', flexWrap: 'wrap' }}>
 				{this.state.repos.map(({ name, owner, stargazers_count, html_url }) => (
